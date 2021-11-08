@@ -43,7 +43,7 @@ void main() {
 
     vec2 color_pos = fragment_position / 2.0 + 0.5;
 
-    gl_FragColor = vec4(color_pos.x, 0, 0, color_pos.y);
+    gl_FragColor = vec4(color_pos.x, 1, 0.5, color_pos.y);
 
 
     // gl_FragColor = vec4(

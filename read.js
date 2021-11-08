@@ -1,81 +1,153 @@
-const { time } = require('console');
-const fs = require('fs');
-const readline = require('readline');
-
-
-// from https://stackoverflow.com/questions/6156501/read-a-file-one-line-at-a-time-in-node-js
-async function parseFile(filepath, delimiter="\t", skipHeader=0) {
-    const fileStream = fs.createReadStream(filepath);
-
-    const rl = readline.createInterface({
-        input: fileStream,
-        crlfDelay: Infinity
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-
-    // Note: we use the crlfDelay option to recognize all instances of CR LF
-    // ('\r\n') in input.txt as a single line break.
-    var data = [];
-    var times = [];
-    var wavelengths = [];
-
-    var i = 0;
-    for await  (const line of rl) {
-        // skip header lines
-        if (i < skipHeader)
-            continue;
-        
-        let split = line.split(delimiter);
-
-        if (i == skipHeader){
-            for (let j = 1; j < split.length; j++) {
-                times.push(parseFloat(split[j]));
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
             }
-        } else {
-            wavelengths.push(parseFloat(split[0]));
-
-            var arr = new Float32Array(times.length);
-            // assert(times.length === split.length - 1);
-
-            for (let j = 1; j < split.length; j++) {
-                arr[j] = parseFloat(split[j]);
-            }
-            data.push(arr);
-            // console.log(arr);
-        }
-        i++;
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
-
-    return [times, wavelengths, data];
-}
-
-function triangulate(times, wavelengths, index = 0) {
-    const t_min = times[0];
-    const t_max = times[times.length - 1];
-    
-    const w_min = wavelengths[0];
-    const w_max = wavelengths[wavelengths.length - 1];
-
-    const t_diff = t_max - t_min;
-    const w_diff = w_max - w_min;
-
-    var t_transf = 1 - (time - t_min) * 2 / t_diff;  // scale from 1 to -1
-    var w_transf = (wls - w_min) * 2 / w_diff - 1;  // scale from -1 to 1
-
+};
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseFile = void 0;
+// const { time } = require('console');
+var fs = require('fs');
+var readline = require('readline');
+// from https://stackoverflow.com/questions/6156501/read-a-file-one-line-at-a-time-in-node-js
+var parseFile = function (filepath, delimiter, skipHeader) {
+    var e_1, _a;
+    if (delimiter === void 0) { delimiter = "\t"; }
+    if (skipHeader === void 0) { skipHeader = 0; }
+    return __awaiter(this, void 0, void 0, function () {
+        var fileStream, rl, data, times, wavelengths, i, rl_1, rl_1_1, line, split, j, arr, j, e_1_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    fileStream = fs.createReadStream(filepath);
+                    rl = readline.createInterface({
+                        input: fileStream,
+                        crlfDelay: Infinity
+                    });
+                    data = [];
+                    times = [];
+                    wavelengths = [];
+                    i = 0;
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, 6, 7, 12]);
+                    rl_1 = __asyncValues(rl);
+                    _b.label = 2;
+                case 2: return [4 /*yield*/, rl_1.next()];
+                case 3:
+                    if (!(rl_1_1 = _b.sent(), !rl_1_1.done)) return [3 /*break*/, 5];
+                    line = rl_1_1.value;
+                    // skip header lines
+                    if (i < skipHeader)
+                        return [3 /*break*/, 4];
+                    split = line.split(delimiter);
+                    if (i === skipHeader) {
+                        for (j = 1; j < split.length; j++) {
+                            times.push(parseFloat(split[j]));
+                        }
+                    }
+                    else {
+                        wavelengths.push(parseFloat(split[0]));
+                        arr = new Float32Array(times.length);
+                        // assert(times.length === split.length - 1);
+                        for (j = 1; j < split.length; j++) {
+                            arr[j] = parseFloat(split[j]);
+                        }
+                        data.push(arr);
+                        // console.log(arr);
+                    }
+                    i++;
+                    _b.label = 4;
+                case 4: return [3 /*break*/, 2];
+                case 5: return [3 /*break*/, 12];
+                case 6:
+                    e_1_1 = _b.sent();
+                    e_1 = { error: e_1_1 };
+                    return [3 /*break*/, 12];
+                case 7:
+                    _b.trys.push([7, , 10, 11]);
+                    if (!(rl_1_1 && !rl_1_1.done && (_a = rl_1.return))) return [3 /*break*/, 9];
+                    return [4 /*yield*/, _a.call(rl_1)];
+                case 8:
+                    _b.sent();
+                    _b.label = 9;
+                case 9: return [3 /*break*/, 11];
+                case 10:
+                    if (e_1) throw e_1.error;
+                    return [7 /*endfinally*/];
+                case 11: return [7 /*endfinally*/];
+                case 12: return [2 /*return*/, [times, wavelengths, data]];
+            }
+        });
+    });
+};
+exports.parseFile = parseFile;
+function triangulate(times, wavelengths, index) {
+    if (index === void 0) { index = 0; }
+    var t_min = times[0];
+    var t_max = times[times.length - 1];
+    var w_min = wavelengths[0];
+    var w_max = wavelengths[wavelengths.length - 1];
+    var t_diff = t_max - t_min;
+    var w_diff = w_max - w_min;
+    var t_transf = 1 - 2 * (0 - t_min) / t_diff; // scale from 1 to -1
+    var w_transf = 2 * (0 - w_min) / w_diff - 1; // scale from -1 to 1
     console.log(t_transf, w_transf);
 }
-
-
-async function main() {
-    var filepath = `C:/Users/Dominik/Documents/MUNI/Organic Photochemistry/RealTimeSync/Projects/2020-Bilirubin - 2nd half/ELI/FSRS + TA, 405 nm ex/PP_2Z_dechirped_EXP.txt`;
-    // var filepath = `C:/Users/Dominik/Documents/MUNI/Organic Photochemistry/RealTimeSync/Projects/2020-Bilirubin - 2nd half/HPLC/new HPLC/2E isomer.sirslt/UV_2E isomer.csv`;
-
-    var [times, wavelengths, data] = await parseFile(filepath, '\t');
-    
-    // console.log(times[times.length - 1]);
-    // console.log(wavelengths[wavelengths.length - 1]);
-
-    triangulate(times, wavelengths, 0);
-
+function main() {
+    return __awaiter(this, void 0, void 0, function () {
+        var filepath, _a, times, wavelengths, data;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    filepath = "C:/Users/Dominik/Documents/MUNI/Organic Photochemistry/RealTimeSync/Projects/2020-Bilirubin - 2nd half/ELI/FSRS + TA, 405 nm ex/PP_2Z_dechirped_EXP.txt";
+                    return [4 /*yield*/, (0, exports.parseFile)(filepath, '\t')];
+                case 1:
+                    _a = _b.sent(), times = _a[0], wavelengths = _a[1], data = _a[2];
+                    console.log(times[times.length - 1]);
+                    console.log(wavelengths[wavelengths.length - 1]);
+                    triangulate(times, wavelengths, 0);
+                    return [2 /*return*/];
+            }
+        });
+    });
 }
-
 main();
